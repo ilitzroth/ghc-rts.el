@@ -1,0 +1,21 @@
+#+TITLE: GHC RTS inside emacs
+#+AUTHOR: Immanuel Litzroth
+#+EMAIL: immanuel dot litzroth at gmail dot com
+
+* Purpose
+This code initializes the ghc rts inside emacs. It is used in an
+upcoming package that allows one to write Haskell code that can be
+called from emacs.
+Reasons for this code as a standalone repo are two fold
+** GHC RTS can only be initialized once
+That means that we need to depend on a emacs lisp feature that will
+not reload a module that is already loaded.
+
+** Writing Haskell code for Emacs does not require C
+The writer of Haskell code for Emacs does not have to mess around with
+writing a stub module that initializes the RTS, he can just
+
+#+BEGIN_SRC emacs-lisp
+(require 'ghc-rts)
+(ghc-rts-initialize)
+#+END_SRC
