@@ -32,6 +32,14 @@
 (eval-when-compile (require 'cl-lib))
 (eval-when-compile (require 'subr-x))
 
+(declare-function ghc-rts::get-rts-status "ext:emacs-ghc-rts")
+(declare-function ghc-rts::init-rts "ext:emacs-ghc-rts")
+(declare-function ghc-rts::exit-rts "ext:emacs-ghc-rts")
+(declare-function ghc-rts::num-allocations "ext:emacs-ghc-rts")
+(declare-function ghc-rts::dynamicp "ext:emacs-ghc-rts")
+(declare-function ghc-rts::profiledp "ext:emacs-ghc-rts")
+(declare-function ghc-rts::stats-enabled-p "ext:emacs-ghc-rts")
+
 (defconst ghc-rts-so
   "emacs-ghc-rts.so"
   "Name of the binary module to load.")
