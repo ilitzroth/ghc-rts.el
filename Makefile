@@ -32,7 +32,7 @@ emacs-ghc-rts.o: emacs-ghc-rts.cpp emacs-ghc-rts.hpp
 clean:
 	rm -f *.o *.so *_stub.h *.hi
 
-.PHONY: clean
+.PHONY: clean emacs-ghc-rts.so test
 
 # Local Variables: *
 # compile-command: "make" *

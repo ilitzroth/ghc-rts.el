@@ -1,9 +1,9 @@
 ;;; ghc-rts.el --- GHC runtime system initialization -*- lexical-binding: t -*-
 
-;; Copyright (C) 2020-2025 Immanuel Litzroth -*- lexical-binding: t -*-
+;; Copyright (C) 2020-2025 Immanuel Litzroth
 
 ;; Author: Immanuel Litzroth <immanuel.litzroth@gmail.com>
-;; Created: Symbol’s function definition is void: time-stamp-string
+;; Created: 25 Aug 2020
 ;; Keywords: languages, processes, tools, haskell, ghc
 ;; Homepage: https://github.com/ilitzroth/ghc-rts.el
 ;; Version : 0.0.1
@@ -40,6 +40,10 @@
 (declare-function ghc-rts::profiledp "ext:emacs-ghc-rts")
 (declare-function ghc-rts::stats-enabled-p "ext:emacs-ghc-rts")
 
+(defconst ghc-rts-internal-sym
+  'ghc-rts-internal
+  "symbol the binary module provides uses to provide")
+
 (defconst ghc-rts-so
   "emacs-ghc-rts.so"
   "Name of the binary module to load.")
@@ -50,31 +54,36 @@
       default-directory)
   "The directory this library was loaded from.")
 
-(defun ghc-rts-maybe-compile-and-load ()
-  "Load an possibly compile the binary module."
-  (unless (require 'ghc-rts-internal nil :no-error)
+(defun ghc-rts-maybe-compile-and-load (&optional force-rebuild)
+  "Load and possibly compile the binary module.
+With prefix argument forces a rebuild of the binary module"
+  (interactive "P")
+  (when force-rebuild
+    (delete-file (concat ghc-rts-directory
+                         ghc-rts-so))
+    (setq features (remove 'ghc-rts-internal features)))
+  (unless (require ghc-rts-internal-sym nil :no-error)
     (let ((default-directory ghc-rts-directory)
-          (help-buffer-name "*GHC RTS Compilation*")
-          (shell-command-dont-erase-buffer t))
+          (ghc-rts-compilation-buffer "*GHC RTS COMPILATION*"))
       (unless (file-exists-p ghc-rts-so)
-        (with-help-window help-buffer-name
-          (prin1-to-string (format
-                  "The binary module to intialize the ghc rts doesn't seem to be
-built on your system yet. I will try to build it but if that doesn't
-work you might able to get it running by checking the Makefile in
-directory %s and fixing it for your system.
-You will need to have recent g++ and ghc installed." ghc-rts-directory)))
-        (when (yes-or-no-p "Build the binary module?")
-          (shell-command "make" help-buffer-name))
-        (unless (file-exists-p ghc-rts-so)
-          (error "Could not build the binary module in dir %s" ghc-rts-directory)))
-      (unless (load "emacs-ghc-rts.so"
+        (when (yes-or-no-p
+               "The binary module to intialize the ghc rts has not been built or
+updated yet. Shall I try to build it?")
+          (shell-command "make" ghc-rts-compilation-buffer)
+          (unless (file-exists-p ghc-rts-so)
+            (pop-to-buffer ghc-rts-compilation-buffer)
+            (error "Could not build the binary module. You might be
+able to compile it by fixing the Makefile in directory '%s'"
+                   ghc-rts-directory))
+          (let (kill-buffer-query-functions)
+            (kill-buffer ghc-rts-compilation-buffer))))
+      (unless (load ghc-rts-so
                     :no-error
                     :no-message
                     :no-suffix
                     :must-suffix)
         (error "Could not load the binary module %s" ghc-rts-so))
-      (provide 'ghc-rts-internal))))
+      (provide ghc-rts-internal-sym))))
 
 (defgroup ghc-rts nil
   "Start GHC RTS in emacs."
