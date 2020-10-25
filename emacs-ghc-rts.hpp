@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
 #ifndef EMACS_HIEDB_H_
 #define EMACS_HIEDB_H_
 #include <emacs-module.h>

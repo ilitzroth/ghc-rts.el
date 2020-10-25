@@ -42,7 +42,7 @@
 
 (defconst ghc-rts-internal-sym
   'ghc-rts-internal
-  "symbol the binary module provides uses to provide")
+  "Symbol the binary module provides.")
 
 (defconst ghc-rts-so
   "emacs-ghc-rts.so"
@@ -56,7 +56,8 @@
 
 (defun ghc-rts-maybe-compile-and-load (&optional force-rebuild)
   "Load and possibly compile the binary module.
-With prefix argument forces a rebuild of the binary module"
+With prefix argument forces a rebuild of the binary module
+Optional argument FORCE-REBUILD removes the module first, forcing a rebuild."
   (interactive "P")
   (when force-rebuild
     (delete-file (concat ghc-rts-directory
@@ -72,7 +73,7 @@ updated yet. Shall I try to build it?")
           (shell-command "make" ghc-rts-compilation-buffer)
           (unless (file-exists-p ghc-rts-so)
             (pop-to-buffer ghc-rts-compilation-buffer)
-            (error "Could not build the binary module. You might be
+            (error "Could not build the binary module.  You might be
 able to compile it by fixing the Makefile in directory '%s'"
                    ghc-rts-directory))
           (let (kill-buffer-query-functions)

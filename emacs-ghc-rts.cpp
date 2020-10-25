@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
 #include <malloc.h>
 #include <string.h>
 #include <Rts.h>

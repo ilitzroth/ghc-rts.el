@@ -1,3 +1,4 @@
+;;; SPDX-License-Identifier: GPL-3.0-or-later
 (require 'ghc-rts)
 
 ;; Since ghc rts can only be started once we have to choose what to test

@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
 GHC := ghc
 GHC_VERSION := $(shell $(GHC) --numeric-version)
 GHC_LIBDIR := $(shell $(GHC) --print-libdir)
